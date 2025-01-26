@@ -7,17 +7,14 @@ namespace EvolutionGame;
  */
 public class Player(string name)
 {
-    [JsonProperty]
-    private string Name { get; } = name; // Volledig private
-    [JsonProperty]
-    private int Level { get; set; } = 1; // Start op level 1
-    [JsonProperty]
-    private int Experience { get; set; } // Start met 0 XP
+    [JsonProperty] private string Name { get; } = name; // Volledig private
+    [JsonProperty] private int Level { get; set; } = 1; // Start op level 1
+    [JsonProperty] private int Experience { get; set; } // Start met 0 XP
 
     /*  End of Primary Constructor for this class.
      *  This comment marks the end of the Primary Constructor for this class.
      */
-    
+
     /*  Public methods.
      *  This section contains public methods that are available for other classes to work with.
      */
@@ -26,7 +23,7 @@ public class Player(string name)
     {
         StorageHelper.SaveToFile(this);
     }
-    
+
     public string GetName()
     {
         return Name;
@@ -41,7 +38,7 @@ public class Player(string name)
     {
         UpdateExperience(points);
     }
-    
+
     public override string ToString()
     {
         return GetInfo();
@@ -57,12 +54,12 @@ public class Player(string name)
         Save();
         Console.WriteLine($"Player {Name} has reached level {Level}");
     }
-    
-    private int GetExperience()
+
+    public int GetExperience()
     {
         return Experience;
     }
-    
+
     private void UpdateExperience(int points)
     {
         //  Logica om experience te verhogen
@@ -72,13 +69,12 @@ public class Player(string name)
         {
             UpdateLevel();
         }
+
         Save();
     }
-    
+
     private string GetInfo()
     {
         return $"Name: {Name}, Level: {Level}, XP: {Experience}";
     }
-
-
 }
