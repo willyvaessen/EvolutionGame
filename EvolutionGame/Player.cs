@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace EvolutionGame;
 
 /*  Primary Constructor for this class.
@@ -5,8 +7,11 @@ namespace EvolutionGame;
  */
 public class Player(string name)
 {
+    [JsonProperty]
     private string Name { get; } = name; // Volledig private
+    [JsonProperty]
     private int Level { get; set; } = 1; // Start op level 1
+    [JsonProperty]
     private int Experience { get; set; } // Start met 0 XP
 
     /*  End of Primary Constructor for this class.
@@ -16,6 +21,12 @@ public class Player(string name)
     /*  Public methods.
      *  This section contains public methods that are available for other classes to work with.
      */
+
+    public void Save()
+    {
+        StorageHelper.SaveToFile(this);
+    }
+    
     public string GetName()
     {
         return Name;
@@ -37,12 +48,13 @@ public class Player(string name)
     }
 
     /*  Private methods
-     *  This section contains the private methods for this class, that will onbly be available internally.
+     *  This section contains the private methods for this class, that will only be available internally.
      */
     private void UpdateLevel()
     {
         //  Logica om het level van de speler te verhogen.
         Level++;
+        Save();
         Console.WriteLine($"Player {Name} has reached level {Level}");
     }
     
@@ -60,6 +72,7 @@ public class Player(string name)
         {
             UpdateLevel();
         }
+        Save();
     }
     
     private string GetInfo()
