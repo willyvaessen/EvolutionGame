@@ -6,17 +6,21 @@ public class Game
     private const int ScreenWidth = 78;
     private const int MaxElements = 64;
 
-    private readonly List<Element>
-        _elements = Enumerable.Repeat(Element.CreateEmptyElement(), MaxElements).ToList(); // Dynamische grid met elementen
+    private readonly List<Element> _elements;
 
     /*  Constructor for this class.
      *  It contains the constructor for the Game Class.
      */
+    public Game()
+    {
+        Element.InitializeElementList(); // Initialiseer de lijst met elementen
+        _elements = Enumerable.Repeat(Element.CreateEmptyElement(), MaxElements)
+            .ToList(); // Vul grid met lege elementen
+    }
 
     /*  End of Constructor for this class.
      *  This comment marks the end of the Constructor for this class.
      */
-
     /*  Public methods.
      *  This section contains public methods that are available for other classes to work with.
      */
@@ -30,7 +34,7 @@ public class Game
             ShowTopBar(player);
             ShowGameContent();
             ShowMenu();
-            GetMenuChoice();
+            GetMenuChoice(player);
         }
     }
 
@@ -79,38 +83,75 @@ public class Game
     {
         DrawBox(ScreenWidth, new List<string>
         {
-            "[1] Start Game | [2] View Organisms | [3] View Elements | [4] Exit"
+            "[1] Spawn Element | [2] Select Element | [3] View Elements | [X] Exit"
         });
     }
 
-    private void GetMenuChoice()
+    private void GetMenuChoice(Player player)
     {
-        Console.Write(">> ");
-        string? menuChoice = Console.ReadLine();
-        switch (menuChoice)
+        while (true)
         {
-            case "1":
-                Console.WriteLine("Option 1 chosen ...");
-                break;
-            case "2":
-                Console.WriteLine("Option 2 chosen ...");
-                break;
-            case "3":
-                Console.WriteLine("Option 3 chosen ...");
-                break;
-            case "4":
-                Console.WriteLine("Option 4 chosen ...");
-                _gameActive = false;
-                break;
-            default:
-                Console.WriteLine("Invalid choice");
-                break;
+            Console.Write(">> ");
+            string menuChoice = (Console.ReadLine() ?? string.Empty).Trim().ToUpper();
+
+            switch (menuChoice)
+            {
+                case "1":
+                    SpawnElement(player);
+                    Console.Clear();
+                    ShowTopBar(player);
+                    ShowGameContent(); // Het grid wordt opnieuw getekend met de nieuwe elementen
+                    ShowMenu();
+                    break;
+                case "2":
+                    Console.WriteLine("Option 2 chosen ...");
+                    break;
+                case "3":
+                    Console.WriteLine("Option 3 chosen ...");
+                    break;
+                case "X":
+                    Console.WriteLine("Exiting game...");
+                    _gameActive = false;
+                    return;
+                default:
+                    Console.WriteLine("Invalid choice. Please try again.");
+                    break;
+            }
         }
     }
 
-    private void SpawnElement()
+    private void SpawnElement(Player player)
     {
-        Console.WriteLine("SpawnElement is not implemented yet.");
+        // Find empty indexes of empty cells (type "XX")
+        var emptyIndices = _elements
+            .Select((element, index) => new { element, index })
+            .Where(e => e.element.Type == "XX")
+            .Select(e => e.index)
+            .ToList();
+
+        if (!emptyIndices.Any())
+        {
+            Console.WriteLine("No empty slots available to spawn an element.");
+            return;
+        }
+
+        // Retrieve available elements based on players level
+        var unlockedElements = Element.GetUnlockedElements(player.GetLevel());
+        if (!unlockedElements.Any())
+        {
+            Console.WriteLine("No elements available to spawn for this level.");
+            return;
+        }
+
+        //  Pick a random empty cell and a random available element.
+        var random = new Random();
+        int randomEmptyIndex = emptyIndices[random.Next(emptyIndices.Count)];
+        Element randomElement = unlockedElements[random.Next(unlockedElements.Count)];
+
+        // Place the element on the grid
+        _elements[randomEmptyIndex] = randomElement;
+
+        Console.WriteLine($"Spawned element {randomElement.Type} at index {randomEmptyIndex}.");
     }
 
     private void DrawBox(int width, List<string> content)

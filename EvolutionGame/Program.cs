@@ -72,12 +72,12 @@ class Program
             Console.WriteLine("=== Main Menu ===");
             Console.WriteLine("1. Start/Resume Game");
             Console.WriteLine("2. Edit Player Info");
-            Console.WriteLine("3. Exit Game");
+            Console.WriteLine("X. Exit Game");
             Console.Write("Enter your choice:");
 
-            string? choice = Console.ReadLine()?.Trim();
+            string menuChoice = (Console.ReadLine() ?? string.Empty).Trim().ToUpper(); // Zorg dat menuChoice nooit null is
 
-            switch (choice)
+            switch (menuChoice)
             {
                 case "1":
                     Console.WriteLine("Starting/Resuming game...");
@@ -88,7 +88,7 @@ class Program
                     Console.WriteLine("Editing player info...");
                     // Logica voor Edit Player Info
                     break;
-                case "3":
+                case "X":
                     Console.WriteLine("Exiting game...");
                     running = false;
                     break;
