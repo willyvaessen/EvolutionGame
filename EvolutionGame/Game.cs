@@ -7,7 +7,7 @@ public class Game
     private const int MaxElements = 64;
 
     private readonly List<Element>
-        _elements = Enumerable.Repeat(new Element("XX"), MaxElements).ToList(); // Dynamische grid met elementen
+        _elements = Enumerable.Repeat(Element.CreateEmptyElement(), MaxElements).ToList(); // Dynamische grid met elementen
 
     /*  Constructor for this class.
      *  It contains the constructor for the Game Class.
