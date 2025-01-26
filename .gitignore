@@ -1,0 +1,15 @@
+# Build-output
+bin/
+obj/
+
+# IDE-specific files
+.idea/
+.vscode/
+
+# Other temporary files tijdelijke bestanden
+*.user
+*.suo
+*.swp
+*.log
+*.tmp
+*.DS_Store
