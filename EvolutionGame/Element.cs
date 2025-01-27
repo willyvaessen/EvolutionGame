@@ -5,7 +5,7 @@ public class Element
     private const string EmptyType = "XX";
     public string Type { get; }
     public string Description { get; }
-    public int UnlockLevel { get; }
+    private int UnlockLevel { get; }
     private static readonly Dictionary<string, Element> ElementList = new();
 
     /*  Constructor for this class.

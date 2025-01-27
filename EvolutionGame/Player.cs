@@ -18,12 +18,7 @@ public class Player(string name)
     /*  Public methods.
      *  This section contains public methods that are available for other classes to work with.
      */
-
-    public void Save()
-    {
-        StorageHelper.SaveToFile(this);
-    }
-
+    
     public string GetName()
     {
         return Name;
@@ -71,6 +66,11 @@ public class Player(string name)
         }
 
         Save();
+    }
+
+    private void Save()
+    {
+        StorageHelper.SaveToFile(this);
     }
 
     private string GetInfo()

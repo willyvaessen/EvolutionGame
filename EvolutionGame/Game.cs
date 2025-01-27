@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace EvolutionGame;
 
 public class Game
@@ -6,7 +8,7 @@ public class Game
     private const int ScreenWidth = 78;
     private const int MaxElements = 64;
 
-    private readonly List<Element> _elements;
+    [JsonProperty] private List<Element> _elements;
 
     /*  Constructor for this class.
      *  It contains the constructor for the Game Class.
@@ -14,20 +16,27 @@ public class Game
     public Game()
     {
         Element.InitializeElementList(); // Initialiseer de lijst met elementen
-        _elements = Enumerable.Repeat(Element.CreateEmptyElement(), MaxElements)
-            .ToList(); // Vul grid met lege elementen
     }
 
     /*  End of Constructor for this class.
      *  This comment marks the end of the Constructor for this class.
      */
+
     /*  Public methods.
      *  This section contains public methods that are available for other classes to work with.
      */
 
+
+    public static Game? LoadGame()
+    {
+        return StorageHelper.LoadFromFile<Game>("game.json");
+    }
+
     public void BuildGameScreen(Player player)
     {
+        LoadOrInitializeGame();
         _gameActive = true;
+
         while (_gameActive)
         {
             Console.Clear();
@@ -41,6 +50,25 @@ public class Game
     /*  Private methods
      *  This section contains the private methods for this class, that will only be available internally.
      */
+
+    private void LoadOrInitializeGame()
+    {
+        // Try loading an existing game and load the elements from that game file
+        var loadedGame = StorageHelper.LoadFromFile<Game>("game.json");
+        if (loadedGame != null)
+        {
+            Console.WriteLine("Loading saved game data...");
+            _elements = loadedGame._elements; // Copy elements from loaded game
+        }
+        // or initialize a new list of elements
+        else
+        {
+            Console.WriteLine("No saved game found. Starting a new game...");
+            _elements = Enumerable.Repeat(Element.CreateEmptyElement(), MaxElements)
+                .ToList(); // Fill grid with empty elements
+        }
+    }
+
     private void ShowTopBar(Player player)
     {
         DrawBox(ScreenWidth, new List<string> { player.ToString() });
@@ -100,7 +128,7 @@ public class Game
                     SpawnElement(player);
                     Console.Clear();
                     ShowTopBar(player);
-                    ShowGameContent(); // Het grid wordt opnieuw getekend met de nieuwe elementen
+                    ShowGameContent(); // Grid will be drawn again with new elements
                     ShowMenu();
                     break;
                 case "2":
@@ -150,7 +178,7 @@ public class Game
 
         // Place the element on the grid
         _elements[randomEmptyIndex] = randomElement;
-
+        Save();
         Console.WriteLine($"Spawned element {randomElement.Type} at index {randomEmptyIndex}.");
     }
 
@@ -166,5 +194,10 @@ public class Game
         }
 
         Console.WriteLine(bottomBorder);
+    }
+
+    private void Save()
+    {
+        StorageHelper.SaveToFile(this);
     }
 }

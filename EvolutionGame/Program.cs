@@ -32,7 +32,7 @@ class Program
 
     private static Player LoadOrCreatePlayer()
     {
-        var existingPlayer = StorageHelper.LoadFromFile();
+        var existingPlayer = StorageHelper.LoadFromFile<Player>("player.json");
         if (existingPlayer != null)
         {
             Console.WriteLine($"Welcome back, {existingPlayer.GetName()}!");
